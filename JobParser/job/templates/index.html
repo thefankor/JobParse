@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ test }}</title>
+</head>
+<body>
+    <h2><a href="{% url 'home' %}">HOME</a></h2>
+    <h1>Поиск вакансий и резюме по Москве и др городам</h1>
+    <h1>{{ test }}</h1>
+
+    <form action="{% url 'search_vacancy' %}" method="get">
+		<input name="q" placeholder="Введите должность..."
+			value="{{ search_text }}">
+	</form>
+    <p>ВАКАНСИИ / РЕЗЮМЕ</p>
+    {% for vac in inf %}
+    <h3>{{ vac.title }}</h3>
+    <p>{{ vac.price }}</p>
+    <p>{{ vac.desc }}</p>
+    <p>{{ vac.loc }}</p>
+    <hr>
+    <p></p>
+    {% endfor %}
+</body>
+</html>
