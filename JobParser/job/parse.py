@@ -268,8 +268,10 @@ def get_resumes_hh(title):
 
         if v.find('div', class_='bloko-text bloko-text_strong'):
             price = v.find('div', class_='bloko-text bloko-text_strong').text
-            price = price.replace('\u2009', ' ')
-            price = price.replace('\xa0', ' ')
+            price = price.replace('\u2009', '')
+            price = price.replace('\xa0', '')
+            price = price.replace(' ', '')
+            price = price.replace('₽', '')
 
             info['price'] = price
         else:

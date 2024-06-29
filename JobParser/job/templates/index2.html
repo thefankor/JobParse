@@ -145,7 +145,39 @@
             width: 550px;
             margin-top: 10px;
         }
+        .sort-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            position: relative;
+            margin-left: auto;
+            margin-right: 0px;
+        }
 
+        .sort-button {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .sort-button.active {
+            background-color: #00a65a;
+            color: #fff;
+        }
+
+        .sort-button:hover {
+            background-color: #e9ecef;
+        }
+
+        .sort-icon {
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -157,7 +189,7 @@
             <a href="{% url 'home2' %}"><button class="source-button">Avito(beta)</button></a>
         </div>
 
-        <form action="{% url 'search_vacancy_hh' %}" method="get">
+        <form action="{% url 'search_vacancy_hh' %}?sort=0" method="get">
             <div class="search-container">
                 <input type="text" name="q" placeholder="Введите должность..."
                 value="{{ search_text }}">
@@ -167,14 +199,17 @@
 
 
         <h4>Результат по запросу: {{ test }}</h4>
+        {% if avg and avg != 0 %}<p>Средняя зарплата: <b>{{ avg }} ₽</b></p>{% endif %}
 
         {% if old %}
             {% if type == 'vac' %}
-                <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_vacancy_hh' %}?q={{ test }}&new=1"><button>Обновить данные</button></a></p>
+                <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_vacancy_hh' %}?q={{ test }}&new=1&sort={{ sort }}"><button>Обновить данные</button></a></p>
             {% else %}
-                <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_resume_hh' %}?q={{ test }}&new=1"><button>Обновить данные</button></a></p>
+                <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_resume_hh' %}?q={{ test }}&new=1&sort={{ sort }}"><button>Обновить данные</button></a></p>
             {% endif %}
         {% endif %}
+
+
 
     </header>
 
@@ -185,14 +220,33 @@
             <div class="source-buttons">
             {% if type == 'vac' %}
                 <button class="source-button active">Вакансии</button>
-                <a href="{% url 'search_resume_hh' %}?q={{ test }}"><button class="source-button">Резюме</button></a>
+                <a href="{% url 'search_resume_hh' %}?q={{ test }}&sort={{ sort }}"><button class="source-button">Резюме</button></a>
             {% else %}
-                <a href="{% url 'search_vacancy_hh' %}?q={{ test }}"><button class="source-button">Вакансии</button></a>
+                <a href="{% url 'search_vacancy_hh' %}?q={{ test }}&sort={{ sort }}"><button class="source-button">Вакансии</button></a>
                 <button class="source-button active">Резюме</button>
             {% endif %}
             </div>
 
+
+             <div class="sort-container">
+
+
+                {% if sort == '1' %}<a href="?q={{ test }}&sort=0">{% endif %}
+                 <button class="sort-button {% if sort == '0' %} active{% endif %}" data-sort="default">
+                    <span class="sort-icon">&#128267;</span>
+                    По умолчанию
+                </button>{% if sort == '1' %}</a>{% endif %}
+
+                 {% if sort == '0' %}<a href="?q={{ test }}&sort=1">{% endif %}
+                <button class="sort-button {% if sort == '1' %} active{% endif %}" data-sort="salary">
+                    <span class="sort-icon">&#128180;</span>
+                    По зарплате
+                </button>{% if sort == '0' %}</a>{% endif %}
+
+            </div>
+
         {% endif %}
+
 
     </nav>
 
@@ -241,7 +295,7 @@
             <a href="https://hh.ru{{ vac.href }}"><h3>{{ vac.title }}</h3></a>
             <div class="info">
                 <span>{% if vac.price %}
-                        {{ vac.price }}
+                        {{ vac.price }} ₽
                     {% else %} Зарплата не указана {% endif %}</span>
 <!--                <span>{% if vac.metro %} {{ vac.metro }} {% else %} {{ vac.area }} {% endif %}</span>-->
             </div>
