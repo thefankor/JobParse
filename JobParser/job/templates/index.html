@@ -13,7 +13,23 @@
 		<input name="q" placeholder="Введите должность..."
 			value="{{ search_text }}">
 	</form>
-    <p>ВАКАНСИИ / РЕЗЮМЕ</p>
+
+    {% if inf %}
+        {% if type == 'vac' %}
+        <p>ВАКАНСИИ / <a href="{% url 'search_resume' %}?q={{ test }}">РЕЗЮМЕ</a></p>
+        {% else %}
+         <p><a href="{% url 'search_vacancy' %}?q={{ test }}">ВАКАНСИИ</a> / РЕЗЮМЕ</p>
+        {% endif %}
+    {% endif %}
+
+    {% if old %}
+        {% if type == 'vac' %}
+            Данные загружены из БД <a href="{% url 'search_vacancy' %}?q={{ test }}&new=1"><button>Обновить данные</button></a>
+        {% else %}
+            Данные загружены из БД <a href="{% url 'search_resume' %}?q={{ test }}&new=1"><button>Обновить данные</button></a>
+        {% endif %}
+    {% endif %}
+
     {% for vac in inf %}
     <h3>{{ vac.title }}</h3>
     <p>{{ vac.price }}</p>

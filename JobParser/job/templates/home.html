@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск вакансий и резюмей</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+            width: 550px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            width: 100%;
+        }
+
+        .bt {
+            text-decoration: none;
+            color: #007bff;
+            padding: 10px 15px;
+            border: 1px solid #007bff;
+            border-radius: 0 5px 5px 0;
+            background-color: #fff;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .bt:hover {
+            background-color: #e9ecef;
+        }
+         .source-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .source-button {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .source-button.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .source-button:hover {
+            background-color: #e9ecef;
+        }
+        input {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Поиск вакансий и резюме</h1>
+        <div class="source-buttons">
+            {% if type == 'hh' %}
+                <button class="source-button active" data-source="avito">HH.ru</button>
+                <a href="{% url 'home2' %}"><button class="source-button" data-source="hh">Avito(beta)</button></a>
+            {% else %}
+                <a href="{% url 'home' %}"><button class="source-button" data-source="avito">HH.ru</button></a>
+                <button class="source-button active" data-source="hh">Avito(beta)</button>
+            {% endif %}
+        </div>
+      <form action="{% if type == 'hh' %}{% url 'search_vacancy_hh' %}{% else %}{% url 'search_vacancy' %}{% endif %}" method="get">
+        <div class="search-container">
+
+		      <input type="text" name="q" placeholder="Введите должность..."
+			    value="{{ search_text }}">
+              <button class="bt">Искать</button>
+        </div>
+        </form>
+    </header>
+</body>
+</html>

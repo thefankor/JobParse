@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ test }}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            margin-block-start: 1em;
+            margin-block-end: 0em;
+        }
+
+
+
+
+
+        nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .bt {
+            text-decoration: none;
+            color: #007bff;
+            padding: 10px 15px;
+            border: 1px solid #007bff;
+            border-radius: 0 5px 5px 0;
+            background-color: #fff;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .bt:hover {
+            background-color: #e9ecef;
+        }
+
+        .bt:disabled {
+            background-color: #ccc;
+            cursor: default;
+        }
+
+
+        .vacancies {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .vacancy {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .vacancy h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .vacancy .info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .vacancy .info span {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .vacancy .description {
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .bio {
+            margin-top:15px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .source-button {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .source-button.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .source-button:hover {
+            background-color: #e9ecef;
+        }
+        input {
+            font-size: 16px;
+
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            width: 100%;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+            width: 550px;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="{% url 'home' %}"><h1>Поиск вакансий и резюме с {{ site }}</h1></a>
+        <div class="source-buttons">
+            <button class="source-button active">HH.ru</button>
+            <a href="{% url 'home2' %}"><button class="source-button">Avito(beta)</button></a>
+        </div>
+
+        <form action="{% url 'search_vacancy_hh' %}" method="get">
+            <div class="search-container">
+                <input type="text" name="q" placeholder="Введите должность..."
+                value="{{ search_text }}">
+                <button class="bt">Искать</button>
+            </div>
+	    </form>
+
+
+        <h4>Результат по запросу: {{ test }}</h4>
+
+        {% if old %}
+            {% if type == 'vac' %}
+                <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_vacancy_hh' %}?q={{ test }}&new=1"><button>Обновить данные</button></a></p>
+            {% else %}
+                <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_resume_hh' %}?q={{ test }}&new=1"><button>Обновить данные</button></a></p>
+            {% endif %}
+        {% endif %}
+
+    </header>
+
+
+    <nav>
+
+        {% if inf %}
+            <div class="source-buttons">
+            {% if type == 'vac' %}
+                <button class="source-button active">Вакансии</button>
+                <a href="{% url 'search_resume_hh' %}?q={{ test }}"><button class="source-button">Резюме</button></a>
+            {% else %}
+                <a href="{% url 'search_vacancy_hh' %}?q={{ test }}"><button class="source-button">Вакансии</button></a>
+                <button class="source-button active">Резюме</button>
+            {% endif %}
+            </div>
+
+        {% endif %}
+
+    </nav>
+
+    <div class="vacancies">
+
+        {% if code == 429 %}
+        <div class="vacancy">
+            <h3>Ошибка парсинга. Код 429. Вернитесь через 30 минут</h3>
+<!--            <div class="info">-->
+<!--                <span>100 000 руб.</span>-->
+<!--                <span>Москва</span>-->
+<!--            </div>-->
+<!--            <div class="description">-->
+<!--                Описание вакансии...-->
+<!--            </div>-->
+        </div>
+        {% endif %}
+
+
+        {% for vac in inf %}
+
+        <div class="vacancy">
+            {% if type == 'vac' %}
+            <a href="{{ vac.href }}"><h3>{{ vac.title }}</h3></a>
+            <div class="info">
+                <span>{% if vac.salary_from or vac.salary_to %}
+                        {% if vac.salary_from and vac.salary_to %}
+                        {{ vac.salary_from }} - {{ vac.salary_to }} ₽
+                        {% elif vac.salary_to %}
+                        до {{ vac.salary_to }} ₽
+                        {% else %}
+                        от {{ vac.salary_from }} ₽
+                        {% endif %}
+                    {% else %} Зарплата не указана {% endif %}</span>
+                <span>{% if vac.metro %}м. {{ vac.metro }} {% else %} {{ vac.area }} {% endif %}</span>
+            </div>
+            <div class="description">
+                {% if vac.req %}<b>Требования:</b>  {{ vac.req }} {% endif %}
+            </div>
+             <div class="bio">
+                {% if vac.resp %} {{ vac.resp }} {% endif %}
+            </div>
+
+            {% else %}
+
+            <a href="https://hh.ru{{ vac.href }}"><h3>{{ vac.title }}</h3></a>
+            <div class="info">
+                <span>{% if vac.price %}
+                        {{ vac.price }}
+                    {% else %} Зарплата не указана {% endif %}</span>
+<!--                <span>{% if vac.metro %} {{ vac.metro }} {% else %} {{ vac.area }} {% endif %}</span>-->
+            </div>
+            <div class="description">
+                {% if vac.exp %} {{ vac.exp }} {% endif %}
+            </div>
+             <div class="bio">
+                 Последнее место работы: <b>{% if vac.last %} {{ vac.last }}</b> {% endif %}
+            </div>
+
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    </div>
+
+</body>
+</html>
