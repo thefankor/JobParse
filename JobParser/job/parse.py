@@ -49,22 +49,22 @@ def get_jobs(title):
             info = dict()
             if v.find('a', 'styles-module-root-iSkj3'):
                 title = v.find('a', 'styles-module-root-iSkj3')
-                info['title'] = title.text
+                info['title'] = title.text.replace('\xa0', ' ').replace('\x00', '')
             else:
                 continue
 
-            info['id'] = v.get('data-item-id')
+            info['id'] = int(v.get('data-item-id'))
             info['href'] = title.get('href')
 
             if v.find('div', class_='price-price-JP7qe'):
                 price = v.find('div', class_='price-price-JP7qe').text
-                price = price.replace('\xa0', '')
+                price = price.replace('\xa0', '').replace('\x00', '')
                 info['price'] = price
             else:
                 info['price'] = None
 
             if v.find('div', class_='iva-item-descriptionStep-C0ty1'):
-                desc = v.find('div', class_='iva-item-descriptionStep-C0ty1').text
+                desc = v.find('div', class_='iva-item-descriptionStep-C0ty1').text.replace('\xa0', ' ').replace('\x00', '')
                 # desc = desc.replace('\xa0', ' ')
                 # desc = desc.replace('\n', '<br>')
                 info['desc'] = desc
@@ -73,7 +73,7 @@ def get_jobs(title):
 
             if v.find('div', class_='geo-root-zPwRk'):
                 loc = v.find('div', class_='geo-root-zPwRk')
-                info['loc'] = loc.text
+                info['loc'] = loc.text.replace('\xa0', ' ').replace('\x00', '')
                 # print(loc.text)
             else:
                 info['loc'] = None
@@ -128,12 +128,13 @@ def get_resumes(title):
             info = dict()
             if v.find('a', 'styles-module-root-iSkj3'):
                 title = v.find('a', 'styles-module-root-iSkj3')
-                info['title'] = title.text
+
+                info['title'] = title.text.replace('\x00', '')
                 info['href'] = title.get('href')
             else:
                 continue
 
-            info['id'] = v.get('data-item-id')
+            info['id'] = int(v.get('data-item-id'))
 
             if v.find('div', class_='price-price-JP7qe'):
                 price = v.find('div', class_='price-price-JP7qe').text
@@ -144,14 +145,14 @@ def get_resumes(title):
 
             if v.find('div', class_='iva-item-descriptionStep-C0ty1'):
                 desc = v.find('div', class_='iva-item-descriptionStep-C0ty1').text
-                desc = desc.replace('\xa0', ' ')
+                desc = desc.replace('\xa0', ' ').replace('\x00', '')
                 info['desc'] = desc
             else:
                 info['desc'] = None
 
             if v.find('span', class_='iva-item-text-Ge6dR'):
                 bio = v.find('span', class_='iva-item-text-Ge6dR')
-                info['bio'] = bio.text
+                info['bio'] = bio.text.replace('\xa0', ' ').replace('\x00', '')
                 # print(loc.text)
             else:
                 info['bio'] = None
@@ -164,7 +165,7 @@ def get_resumes(title):
     return vakansii, r.status_code
 
 
-def get_jobs_hh(title):
+def get_jobs_hh(title, exp='None', emp='None'):
     import requests
     import json
 
@@ -179,12 +180,19 @@ def get_jobs_hh(title):
 
     vakansii = []
 
-    url = f'https://api.hh.ru/vacancies?text={title}&per_page=50&area=1'
+    url = (f'https://api.hh.ru/vacancies?text={title}&per_page=50&area=1')
+    if exp != 'None':
+        url = url +f'&experience={exp}'
+    if emp != 'None':
+        url = url +f'&employment={emp}'
     r = requests.get(url, headers=headers, timeout=15)
 
     print(r.status_code)
 
-    vacs = json.loads(r.text)['items']
+    try:
+        vacs = json.loads(r.text)['items']
+    except:
+        return [], r.status_code
 
     # print(vacs)
     for vac in vacs:
@@ -207,6 +215,13 @@ def get_jobs_hh(title):
             if vac['address']['metro']:
                 if vac['address']['metro']['station_name']:
                     info['metro'] = vac['address']['metro']['station_name']
+
+        info['experience'] = vac['experience']
+        info['employment'] = vac['employment']
+        if vac['experience']:
+            info['experience'] = vac['experience']['id']
+        if vac['employment']:
+            info['employment'] = vac['employment']['id']
 
         info['req'] = None
         info['resp'] = None
@@ -273,7 +288,10 @@ def get_resumes_hh(title):
             price = price.replace(' ', '')
             price = price.replace('₽', '')
 
-            info['price'] = price
+            try:
+                info['price'] = int(price)
+            except:
+                continue
         else:
             info['price'] = None
 

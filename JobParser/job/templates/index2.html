@@ -178,6 +178,54 @@
         .sort-icon {
             margin-right: 5px;
         }
+        .sidebar {
+            width: 200px;
+            padding: 20px;
+            background-color: #fff;
+            border-right: 1px solid #ccc;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+            align-self: flex-start;
+            margin-left: 20px;
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #007bff;
+            padding: 5px;
+            border-radius: 5px;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar ul li a.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #e9ecef;
+        }
+        .content {
+            flex: 1;
+            padding-right: 30px;
+        }
+
     </style>
 </head>
 <body>
@@ -203,7 +251,7 @@
 
         {% if old %}
             {% if type == 'vac' %}
-                <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_vacancy_hh' %}?q={{ test }}&new=1&sort={{ sort }}"><button>Обновить данные</button></a></p>
+                <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_vacancy_hh' %}?q={{ test }}&new=1&sort={{ sort }}&emp={{ employment }}&exp={{ experience }}"><button>Обновить данные</button></a></p>
             {% else %}
                 <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_resume_hh' %}?q={{ test }}&new=1&sort={{ sort }}"><button>Обновить данные</button></a></p>
             {% endif %}
@@ -213,7 +261,31 @@
 
     </header>
 
+    <div class="content-container" style="display: flex;">
+        {% if type == 'vac' %}
+        <div class="sidebar">
+            <h2>Тип занятости</h2>
+            <ul>
+                <li><a href="?q={{ test }}&sort={{ sort }}&exp={{ experience }}" class="{% if employment == 'None' %}active{% endif %}">Любой</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&exp={{ experience }}&emp=full" class="{% if employment == 'full' %}active{% endif %}">Полная занятость</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&exp={{ experience }}&emp=part" class="{% if employment == 'part' %}active{% endif %}">Частичная занятость</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&exp={{ experience }}&emp=project" class="{% if employment == 'project' %}active{% endif %}">Проектная работа</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&exp={{ experience }}&emp=volunteer" class="{% if employment == 'volunteer' %}active{% endif %}">Волонтерство</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&exp={{ experience }}&emp=probation" class="{% if employment == 'probation' %}active{% endif %}">Стажировка</a></li>
+            </ul>
+            <br>
+            <h2>Опыт работы</h2>
+            <ul>
+                <li><a href="?q={{ test }}&sort={{ sort }}&emp={{ employment }}" class="{% if experience == 'None' %}active{% endif %}">Любой</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&emp={{ employment }}&exp=noExperience" class="{% if experience == 'noExperience' %}active{% endif %}">Без опыта</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&emp={{ employment }}&exp=between1And3" class="{% if experience == 'between1And3' %}active{% endif %}">От 1 года до 3 лет</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&emp={{ employment }}&exp=between3And6" class="{% if experience == 'between3And6' %}active{% endif %}">От 3 до 6 лет</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&emp={{ employment }}&exp=moreThan6" class="{% if experience == 'moreThan6' %}active{% endif %}">Более 6 лет</a></li>
+            </ul>
+        </div>
+        {% endif %}
 
+        <div class="content">
     <nav>
 
         {% if inf %}
@@ -231,13 +303,13 @@
              <div class="sort-container">
 
 
-                {% if sort == '1' %}<a href="?q={{ test }}&sort=0">{% endif %}
+                {% if sort == '1' %}<a href="?q={{ test }}&sort=0&emp={{ employment }}&exp={{ experience }}">{% endif %}
                  <button class="sort-button {% if sort == '0' %} active{% endif %}" data-sort="default">
                     <span class="sort-icon">&#128267;</span>
                     По умолчанию
                 </button>{% if sort == '1' %}</a>{% endif %}
 
-                 {% if sort == '0' %}<a href="?q={{ test }}&sort=1">{% endif %}
+                 {% if sort == '0' %}<a href="?q={{ test }}&sort=1&emp={{ employment }}&exp={{ experience }}">{% endif %}
                 <button class="sort-button {% if sort == '1' %} active{% endif %}" data-sort="salary">
                     <span class="sort-icon">&#128180;</span>
                     По зарплате
@@ -289,6 +361,16 @@
              <div class="bio">
                 {% if vac.resp %} {{ vac.resp }} {% endif %}
             </div>
+            {% if vac.experience %}
+            <div class="bio" style="color:gray;">
+                Опыт: {{ vac.get_experience_display }}
+            </div>
+            {% endif %}
+            {% if vac.employment %}
+            <div class="bio" style="color:gray;">
+                {{ vac.get_employment_display }}
+            </div>
+            {% endif %}
 
             {% else %}
 
@@ -310,6 +392,8 @@
         </div>
     {% endfor %}
 
+    </div>
+        </div>
     </div>
 
 </body>

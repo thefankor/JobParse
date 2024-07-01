@@ -26,7 +26,7 @@ class Resume(models.Model):
     title = models.CharField(max_length=255)
     desc = models.TextField(blank=True, null=True)
     price = models.CharField(max_length=255, blank=True, null=True)
-    bio = models.CharField(blank=True, max_length=255, null=True)
+    bio = models.TextField(blank=True, max_length=255, null=True)
     is_active = models.BooleanField(default=True)
     time_created = models.DateTimeField(auto_now_add=True)
     time_updated = models.DateTimeField(auto_now=True)
@@ -48,6 +48,21 @@ class HHVacancy(models.Model):
     is_active = models.BooleanField(default=True)
     time_created = models.DateTimeField(auto_now_add=True)
     time_updated = models.DateTimeField(auto_now=True)
+    experience = models.CharField(choices=(
+            ("noExperience", "Без опыта"),
+            ("between1And3", "От 1 года до 3 лет"),
+            ("between3And6", "От 3 до 6 лет"),
+            ("moreThan6", "Более 6 лет"),
+        ),
+        default="noExperience", blank=True, null=True, max_length=30)
+    employment = models.CharField(choices=(
+            ("full", "Полная занятость"),
+            ("part", "Частичная занятость"),
+            ("project", "Проектная работа"),
+            ("volunteer", "Волонтерство"),
+            ("probation", "Стажировка"),
+        ),
+        default="full", blank=True, null=True, max_length=30)
 
     class Meta:
         ordering = ["-time_created"]
@@ -58,7 +73,7 @@ class HHResume(models.Model):
     href = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
     exp = models.CharField(blank=True, null=True, max_length=255)
-    price = models.CharField(max_length=255, blank=True, null=True)
+    price = models.BigIntegerField(blank=True, null=True)
     last = models.CharField(blank=True, max_length=255, null=True)
     is_active = models.BooleanField(default=True)
     time_created = models.DateTimeField(auto_now_add=True)
