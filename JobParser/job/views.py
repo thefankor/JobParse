@@ -110,13 +110,13 @@ def search_vacancy_hh(request):
 
     if (exp != 'None' and exp) and (emp != 'None' and emp):
         olds = olds.filter(experience=exp, employment=emp)
-        print('a')
+        # print('a')
     elif exp != 'None' and exp and (emp == None or emp == 'None'):
         olds = olds.filter(experience=exp)
-        print('b')
+        # print('b')
     elif emp != 'None' and emp and (exp == None or exp == 'None'):
         olds = olds.filter(employment=emp)
-        print('c')
+        # print('c')
 
     if len(olds) == 0 or search_type == '1':
         # print('new')
@@ -202,13 +202,16 @@ def search_vacancy_hh(request):
 
     return render(request, 'index2.html', context={'test': search_query, 'inf': inf, 'old': old, 'type':'vac', 'code': code,
                                                    'site': 'HH.ru', 'avg': salary_avg, 'sort': sort or '0',
-                                                   'employment': emp or 'None', 'experience': exp or 'None'})
+                                                   'employment': emp or 'None', 'experience': exp or 'None',
+                                                   'sort_type': '0'})
 
 
 def search_resume_hh(request):
     search_query = request.GET.get('q')
     sort = request.GET.get('sort')
     search_type = request.GET.get('new')
+    exp = request.GET.get('exp')
+    emp = request.GET.get('emp')
     print(search_query)
 
     ids = []
@@ -219,10 +222,12 @@ def search_resume_hh(request):
     old = True
     inf = []
     olds = HHResume.objects.filter(title__iregex=search_query)
+
+
     if len(olds) == 0 or search_type == '1':
         print('new')
         old = False
-        resumes, code = get_resumes_hh(search_query)
+        resumes, code = get_resumes_hh(search_query, exp, emp)
 
         r = HHResume.objects.filter(title__iregex=search_query)
         r.update(is_active=False)
@@ -250,7 +255,9 @@ def search_resume_hh(request):
         # inf = HHResume.objects.filter(title__iregex=search_query, is_active=True)
         # inf = spis
         if sort == '1':
-            inf = HHResume.objects.annotate(
+            # print('AAAA')
+            inf = HHResume.objects.filter(pk__in=ids)
+            inf = inf.annotate(
                 nulls_last=Case(
                     When(price__isnull=True, then=Value(1)),
                     When(price__isnull=False, then=Value(0)),
@@ -263,7 +270,7 @@ def search_resume_hh(request):
         print('old')
         salary_avg = int(olds.exclude(price__isnull=True).aggregate(Avg('price'))['price__avg'])
         if sort == '1':
-            inf = olds.annotate(
+            inf = olds.filter(is_active=True).annotate(
                 nulls_last=Case(
                     When(price__isnull=True, then=Value(1)),
                     When(price__isnull=False, then=Value(0)),
@@ -274,6 +281,13 @@ def search_resume_hh(request):
             inf = olds
         old = True
 
+    if exp != 'None' or emp != 'None':
+        s_t = '1'
+    else:
+        s_t = '0'
+
     # for vac in slov:
     return render(request, 'index2.html', context={'test': search_query, 'inf': inf, 'old': old, 'type': 'res',
-                                                   'code': code, 'site': 'HH.ru', 'avg': salary_avg, 'sort': sort or '0'})
+                                                   'code': code, 'site': 'HH.ru', 'avg': salary_avg, 'sort': sort or '0',
+                                                   'employment': emp or 'None', 'experience': exp or 'None',
+                                                   'sort_type': s_t})

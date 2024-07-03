@@ -37,9 +37,9 @@ class Resume(models.Model):
 
 class HHVacancy(models.Model):
     out_id = models.BigIntegerField(unique=True)
-    href = models.CharField(max_length=255)
+    href = models.CharField(max_length=500)
     title = models.CharField(max_length=255)
-    area = models.CharField(max_length=255)
+    area = models.CharField(max_length=500)
     salary_from = models.BigIntegerField(blank=True, null=True)
     salary_to = models.BigIntegerField(blank=True, null=True)
     metro = models.CharField(blank=True, max_length=255, null=True)
@@ -70,11 +70,11 @@ class HHVacancy(models.Model):
 
 class HHResume(models.Model):
     out_id = models.BigIntegerField(unique=True)
-    href = models.CharField(max_length=255)
+    href = models.CharField(max_length=500)
     title = models.CharField(max_length=255)
-    exp = models.CharField(blank=True, null=True, max_length=255)
+    exp = models.CharField(blank=True, null=True, max_length=500)
     price = models.BigIntegerField(blank=True, null=True)
-    last = models.CharField(blank=True, max_length=255, null=True)
+    last = models.CharField(blank=True, max_length=500, null=True)
     is_active = models.BooleanField(default=True)
     time_created = models.DateTimeField(auto_now_add=True)
     time_updated = models.DateTimeField(auto_now=True)

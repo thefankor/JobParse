@@ -253,7 +253,7 @@
             {% if type == 'vac' %}
                 <p>Данные загружены из БД - вы можете загрузить новые -  <a style="text-decoration: underline; color: #007bff;" href="{% url 'search_vacancy_hh' %}?q={{ test }}&new=1&sort={{ sort }}&emp={{ employment }}&exp={{ experience }}"><b>Обновить данные</b></a></p>
             {% else %}
-                <p>Данные загружены из БД - вы можете загрузить новые -  <a style="text-decoration: underline; color: #007bff;" href="{% url 'search_resume_hh' %}?q={{ test }}&new=1&sort={{ sort }}"><b>Обновить данные</b></a></p>
+                <p>Данные загружены из БД - вы можете загрузить новые -  <a style="text-decoration: underline; color: #007bff;" href="{% url 'search_resume_hh' %}?q={{ test }}&new=1&sort={{ sort }}&emp={{ employment }}&exp={{ experience }}"><b>Обновить данные</b></a></p>
             {% endif %}
         {% endif %}
 
@@ -262,7 +262,7 @@
     </header>
 
     <div class="content-container" style="display: flex;">
-        {% if type == 'vac' %}
+
         <div class="sidebar">
             <h2>Тип занятости</h2>
             <ul>
@@ -283,7 +283,6 @@
                 <li><a href="?q={{ test }}&sort={{ sort }}&new=1&emp={{ employment }}&exp=moreThan6" class="{% if experience == 'moreThan6' %}active{% endif %}">Более 6 лет</a></li>
             </ul>
         </div>
-        {% endif %}
 
         <div class="content">
     <nav>
@@ -292,9 +291,9 @@
             <div class="source-buttons">
             {% if type == 'vac' %}
                 <button class="source-button active">Вакансии</button>
-                <a href="{% url 'search_resume_hh' %}?q={{ test }}&sort={{ sort }}"><button class="source-button">Резюме</button></a>
+                <a href="{% url 'search_resume_hh' %}?q={{ test }}&sort={{ sort }}&emp={{ employment }}&exp={{ experience }}"><button class="source-button">Резюме</button></a>
             {% else %}
-                <a href="{% url 'search_vacancy_hh' %}?q={{ test }}&sort={{ sort }}"><button class="source-button">Вакансии</button></a>
+                <a href="{% url 'search_vacancy_hh' %}?q={{ test }}&sort={{ sort }}&emp={{ employment }}&exp={{ experience }}"><button class="source-button">Вакансии</button></a>
                 <button class="source-button active">Резюме</button>
             {% endif %}
             </div>
@@ -303,13 +302,13 @@
              <div class="sort-container">
 
 
-                {% if sort == '1' %}<a href="?q={{ test }}&sort=0&emp={{ employment }}&exp={{ experience }}">{% endif %}
+                {% if sort == '1' %}<a href="?q={{ test }}&sort=0&emp={{ employment }}&exp={{ experience }}{% if sort_type == '1' %}&new=1{% endif %}">{% endif %}
                  <button class="sort-button {% if sort == '0' %} active{% endif %}" data-sort="default">
                     <span class="sort-icon">&#128267;</span>
                     По умолчанию
                 </button>{% if sort == '1' %}</a>{% endif %}
 
-                 {% if sort == '0' %}<a href="?q={{ test }}&sort=1&emp={{ employment }}&exp={{ experience }}">{% endif %}
+                 {% if sort == '0' %}<a href="?q={{ test }}&sort=1&emp={{ employment }}&exp={{ experience }}{% if sort_type == '1' %}&new=1{% endif %}">{% endif %}
                 <button class="sort-button {% if sort == '1' %} active{% endif %}" data-sort="salary">
                     <span class="sort-icon">&#128180;</span>
                     По зарплате

@@ -241,7 +241,7 @@ def get_jobs_hh(title, exp='None', emp='None'):
     return vakansii, r.status_code
 
 
-def get_resumes_hh(title):
+def get_resumes_hh(title, exp='None', emp='None'):
     headers = {
         'content-type': "application/json;charset=utf-8",
         'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
@@ -255,12 +255,16 @@ def get_resumes_hh(title):
     a = []
 
     url = f'https://hh.ru/search/resume?area=1&exp_period=all_time&logic=normal&no_magic=true&order_by=relevance&ored_clusters=true&pos=full_text&search_period=0&text={title}&items_on_page=50'
+    if exp and exp != 'None':
+        url = url +f'&experience={exp}'
+    if emp and emp != 'None':
+        url = url +f'&employment={emp}'
     r = requests.get(url, headers=headers, timeout=15)
 
     # print(r.text)
-    f = open('hh.html', 'w')
-    f.write(r.text)
-    f.close()
+    # f = open('hh.html', 'w')
+    # f.write(r.text)
+    # f.close()
 
     soup = BS(r.text, "html.parser")
 
@@ -291,6 +295,7 @@ def get_resumes_hh(title):
 
             try:
                 info['price'] = int(price)
+                # print(price)
             except:
                 continue
         else:
@@ -298,6 +303,7 @@ def get_resumes_hh(title):
 
         if v.find('div', class_='content--uYCSpLiTsRfIZJe2wiYy'):
             exp = v.find('div', class_='content--uYCSpLiTsRfIZJe2wiYy').text
+            # print(exp)
             # price = price.replace('\u2009', ' ')
             # price = price.replace('\xa0', ' ')
 
