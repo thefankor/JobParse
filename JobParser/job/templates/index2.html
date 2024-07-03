@@ -251,9 +251,9 @@
 
         {% if old %}
             {% if type == 'vac' %}
-                <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_vacancy_hh' %}?q={{ test }}&new=1&sort={{ sort }}&emp={{ employment }}&exp={{ experience }}"><button>Обновить данные</button></a></p>
+                <p>Данные загружены из БД - вы можете загрузить новые -  <a style="text-decoration: underline; color: #007bff;" href="{% url 'search_vacancy_hh' %}?q={{ test }}&new=1&sort={{ sort }}&emp={{ employment }}&exp={{ experience }}"><b>Обновить данные</b></a></p>
             {% else %}
-                <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_resume_hh' %}?q={{ test }}&new=1&sort={{ sort }}"><button>Обновить данные</button></a></p>
+                <p>Данные загружены из БД - вы можете загрузить новые -  <a style="text-decoration: underline; color: #007bff;" href="{% url 'search_resume_hh' %}?q={{ test }}&new=1&sort={{ sort }}"><b>Обновить данные</b></a></p>
             {% endif %}
         {% endif %}
 
@@ -266,21 +266,21 @@
         <div class="sidebar">
             <h2>Тип занятости</h2>
             <ul>
-                <li><a href="?q={{ test }}&sort={{ sort }}&exp={{ experience }}" class="{% if employment == 'None' %}active{% endif %}">Любой</a></li>
-                <li><a href="?q={{ test }}&sort={{ sort }}&exp={{ experience }}&emp=full" class="{% if employment == 'full' %}active{% endif %}">Полная занятость</a></li>
-                <li><a href="?q={{ test }}&sort={{ sort }}&exp={{ experience }}&emp=part" class="{% if employment == 'part' %}active{% endif %}">Частичная занятость</a></li>
-                <li><a href="?q={{ test }}&sort={{ sort }}&exp={{ experience }}&emp=project" class="{% if employment == 'project' %}active{% endif %}">Проектная работа</a></li>
-                <li><a href="?q={{ test }}&sort={{ sort }}&exp={{ experience }}&emp=volunteer" class="{% if employment == 'volunteer' %}active{% endif %}">Волонтерство</a></li>
-                <li><a href="?q={{ test }}&sort={{ sort }}&exp={{ experience }}&emp=probation" class="{% if employment == 'probation' %}active{% endif %}">Стажировка</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&new=1&exp={{ experience }}" class="{% if employment == 'None' %}active{% endif %}">Любой</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&new=1&exp={{ experience }}&emp=full" class="{% if employment == 'full' %}active{% endif %}">Полная занятость</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&new=1&exp={{ experience }}&emp=part" class="{% if employment == 'part' %}active{% endif %}">Частичная занятость</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&new=1&exp={{ experience }}&emp=project" class="{% if employment == 'project' %}active{% endif %}">Проектная работа</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&new=1&exp={{ experience }}&emp=volunteer" class="{% if employment == 'volunteer' %}active{% endif %}">Волонтерство</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&new=1&exp={{ experience }}&emp=probation" class="{% if employment == 'probation' %}active{% endif %}">Стажировка</a></li>
             </ul>
             <br>
             <h2>Опыт работы</h2>
             <ul>
-                <li><a href="?q={{ test }}&sort={{ sort }}&emp={{ employment }}" class="{% if experience == 'None' %}active{% endif %}">Любой</a></li>
-                <li><a href="?q={{ test }}&sort={{ sort }}&emp={{ employment }}&exp=noExperience" class="{% if experience == 'noExperience' %}active{% endif %}">Без опыта</a></li>
-                <li><a href="?q={{ test }}&sort={{ sort }}&emp={{ employment }}&exp=between1And3" class="{% if experience == 'between1And3' %}active{% endif %}">От 1 года до 3 лет</a></li>
-                <li><a href="?q={{ test }}&sort={{ sort }}&emp={{ employment }}&exp=between3And6" class="{% if experience == 'between3And6' %}active{% endif %}">От 3 до 6 лет</a></li>
-                <li><a href="?q={{ test }}&sort={{ sort }}&emp={{ employment }}&exp=moreThan6" class="{% if experience == 'moreThan6' %}active{% endif %}">Более 6 лет</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&new=1&emp={{ employment }}" class="{% if experience == 'None' %}active{% endif %}">Любой</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&new=1&emp={{ employment }}&exp=noExperience" class="{% if experience == 'noExperience' %}active{% endif %}">Без опыта</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&new=1&emp={{ employment }}&exp=between1And3" class="{% if experience == 'between1And3' %}active{% endif %}">От 1 года до 3 лет</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&new=1&emp={{ employment }}&exp=between3And6" class="{% if experience == 'between3And6' %}active{% endif %}">От 3 до 6 лет</a></li>
+                <li><a href="?q={{ test }}&sort={{ sort }}&new=1&emp={{ employment }}&exp=moreThan6" class="{% if experience == 'moreThan6' %}active{% endif %}">Более 6 лет</a></li>
             </ul>
         </div>
         {% endif %}

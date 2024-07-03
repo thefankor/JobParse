@@ -181,10 +181,11 @@ def get_jobs_hh(title, exp='None', emp='None'):
     vakansii = []
 
     url = (f'https://api.hh.ru/vacancies?text={title}&per_page=50&area=1')
-    if exp != 'None':
+    if exp and exp != 'None':
         url = url +f'&experience={exp}'
-    if emp != 'None':
+    if emp and emp != 'None':
         url = url +f'&employment={emp}'
+    # print(url)
     r = requests.get(url, headers=headers, timeout=15)
 
     print(r.status_code)

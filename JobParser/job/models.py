@@ -65,7 +65,7 @@ class HHVacancy(models.Model):
         default="full", blank=True, null=True, max_length=30)
 
     class Meta:
-        ordering = ["-time_created"]
+        ordering = ["-time_updated"]
 
 
 class HHResume(models.Model):

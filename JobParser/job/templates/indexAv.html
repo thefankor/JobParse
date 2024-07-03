@@ -163,9 +163,9 @@
 
         {% if old %}
             {% if type == 'vac' %}
-                <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_vacancy' %}?q={{ test }}&new=1"><button>Обновить данные</button></a></p>
+                <p>Данные загружены из БД - вы можете загрузить новые -  <a style="text-decoration: underline; color: #007bff;" href="{% url 'search_vacancy' %}?q={{ test }}&new=1"><b>Обновить данные</b></a></p>
             {% else %}
-                <p>Данные загружены из БД - вы можете загрузить новые -  <a href="{% url 'search_resume' %}?q={{ test }}&new=1"><button>Обновить данные</button></a></p>
+                <p>Данные загружены из БД - вы можете загрузить новые -  <a style="text-decoration: underline; color: #007bff;" href="{% url 'search_resume' %}?q={{ test }}&new=1"><b>Обновить данные</b></a></p>
             {% endif %}
         {% endif %}
 

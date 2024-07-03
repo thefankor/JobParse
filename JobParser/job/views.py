@@ -106,7 +106,7 @@ def search_vacancy_hh(request):
     code = 0
     old = True
     inf = []
-    olds = HHVacancy.objects.filter(title__iregex=search_query)
+    olds = HHVacancy.objects.filter(title__iregex=search_query).filter(is_active=True)
 
     if (exp != 'None' and exp) and (emp != 'None' and emp):
         olds = olds.filter(experience=exp, employment=emp)
@@ -119,6 +119,7 @@ def search_vacancy_hh(request):
         print('c')
 
     if len(olds) == 0 or search_type == '1':
+        # print('new')
 
         spis = []
         ids = []
@@ -158,8 +159,8 @@ def search_vacancy_hh(request):
                 salary_avg = None
 
             if sort == '1':
-                # inf = HHVacancy.objects.filter(pk__in=ids).order_by('-salary_from')
-                inf = HHVacancy.objects.annotate(
+                inf = HHVacancy.objects.filter(pk__in=ids)
+                inf =  inf.annotate(
                 nulls_last=Case(
                     When(salary_from__isnull=True, then=Value(1)),
                     When(salary_from__isnull=False, then=Value(0)),
@@ -177,6 +178,7 @@ def search_vacancy_hh(request):
         salary_avg = int((average_salary_to or 0 + average_salary_from or 0)/2)
         # inf = olds
         old = True
+        # print('old')
 
 
 
@@ -195,6 +197,7 @@ def search_vacancy_hh(request):
                 )
             ).order_by('nulls_last', '-salary_from')
         else:
+
             inf = olds
 
     return render(request, 'index2.html', context={'test': search_query, 'inf': inf, 'old': old, 'type':'vac', 'code': code,
@@ -217,6 +220,7 @@ def search_resume_hh(request):
     inf = []
     olds = HHResume.objects.filter(title__iregex=search_query)
     if len(olds) == 0 or search_type == '1':
+        print('new')
         old = False
         resumes, code = get_resumes_hh(search_query)
 
@@ -256,6 +260,7 @@ def search_resume_hh(request):
         else:
             inf = spis
     else:
+        print('old')
         salary_avg = int(olds.exclude(price__isnull=True).aggregate(Avg('price'))['price__avg'])
         if sort == '1':
             inf = olds.annotate(
